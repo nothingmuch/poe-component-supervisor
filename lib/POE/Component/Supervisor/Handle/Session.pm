@@ -10,7 +10,8 @@ with qw(
 
 #use POE::API::Peek;
 
-use MooseX::Types::Set::Object;
+#use MooseX::Types::Set::Object;
+use Set::Object ();
 
 has implicit_tracking => (
     isa => "Bool",
@@ -31,14 +32,14 @@ has error => (
 );
 
 has _sessions => (
-    isa => "Set::Object",
+    #isa => "Set::Object",
     is  => "rw",
     init_arg => undef,
     default => sub { Set::Object->new },
 );
 
 has _dead_sessions => (
-    isa => "Set::Object",
+    #isa => "Set::Object",
     is  => "rw",
     init_arg => undef,
     default => sub { Set::Object->new },
