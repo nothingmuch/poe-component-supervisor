@@ -8,6 +8,8 @@ use Moose::Util::TypeConstraints;
 use POE::Component::Supervisor::Supervised;
 use POE::Component::Supervisor::Handle;
 
+our $VERSION = "0.01";
+
 with qw(
     MooseX::POE::Aliased
     POE::Component::Supervisor::LogDispatch
