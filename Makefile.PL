@@ -16,7 +16,7 @@ WriteMakefile(
         'MooseX::POE' => "0.07",
         'MooseX::LogDispatch' => 0,
         'Log::Dispatch::Config::TestLog' => 0,
-        'MooseX:Types::Set::Object' => 0,
+        'Set::Object' => 0,
         'Tie::RefHash' => 0,
 	},
 );
