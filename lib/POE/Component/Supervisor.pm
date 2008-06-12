@@ -392,7 +392,7 @@ anything the session will also close. See L<POE>, and L<MooseX::POE::Aliased>.
 
 =item alias
 
-See L<MooseX::POE::ALliased>.
+See L<MooseX::POE::Aliased>.
 
 This defaults to C<undef>, unlike the role, so that a supervisor session will
 close automatically once it has no more children to supervise.
