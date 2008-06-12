@@ -33,13 +33,14 @@ POE::Component::Supervisor::Supervised::Proc - A supervision descriptor for UNIX
 
     use POE;
 
-    use POE::Component::Supervisor
-	use POE::Component::Supervisor::Supervised::Proc;
+    use POE::Component::Supervisor;
+    use POE::Component::Supervisor::Supervised::Proc;
 
     POE::Component::Supervisor->new(
         children => [
             POE::Component::Supervisor::Supervised::Proc->new(
                 program => [qw(memcached -m 64)],
+                restart_policy => "permanent",
             ),
         ],
     );
