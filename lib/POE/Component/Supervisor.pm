@@ -23,9 +23,7 @@ sub run {
 }
 
 # by default when all the children die we exit as well
-has '+alias' => (
-    default => undef,
-);
+sub _build_alias { undef }
 
 has restart_policy => (
     isa => enum(__PACKAGE__ . "::RestartPolicy" => qw(one all rest)),
