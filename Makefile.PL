@@ -11,7 +11,7 @@ WriteMakefile(
 	SIGN         => 1,
 	PL_FILES     => { },
 	PREREQ_PM    => {
-		'Test::use::ok' => 0,
+        'Test::use::ok' => 0,
         'POE' => "1.0002", # DIE in parents
         'MooseX::POE' => 0,
         'MooseX::LogDispatch' => 0,
