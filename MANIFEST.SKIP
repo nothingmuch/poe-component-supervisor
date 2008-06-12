@@ -36,3 +36,8 @@
 \.tar\.gz$
 ^(\w+-)*(\w+)-\d\.\d+$
 
+# App::Prove::State
+^\.prove$
+
+# test logs
+\.log$
