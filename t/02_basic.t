@@ -147,7 +147,6 @@ use POE;
                                     while ($counter < 5) {
                                         sleep 1;
                                         $counter++;
-                                        warn "running in $i";
                                     }
                                     exit 0;
                                 },
