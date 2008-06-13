@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+sub POE::Kernel::USE_SIGCHLD () { 1 }
+
 use strict;
 use warnings;
 
@@ -29,7 +31,7 @@ foreach my $policy qw(one all rest) {
                                 program => sub {
                                     print "$i $$\n";
                                     if ( $i == 3 ) {
-                                        sleep 4;
+                                        sleep 1;
                                         exit 1;
                                     } else {
                                         sleep;
@@ -41,7 +43,7 @@ foreach my $policy qw(one all rest) {
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_children => 7 );
+                $_[KERNEL]->delay_set( stop_children => 1.5 );
             },
             stop_children => sub {
                 $supervisor->stop;

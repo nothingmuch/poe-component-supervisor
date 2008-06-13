@@ -203,9 +203,10 @@ event child_exit => sub {
 event _cleanup => sub {
     my ( $self, $kernel ) = @_[OBJECT, KERNEL];
 
-    $self->_wheel->shutdown_stdin;
-
-    $self->_clear_wheel;
+    if ( my $wheel = $self->_wheel ) {
+       $wheel->shutdown_stdin;
+       $self->_clear_wheel;
+    }
     
     $kernel->alarm_remove_all();
 
@@ -244,7 +245,9 @@ event _close_stdin => sub {
 
     $self->logger->info("closing child stdin");
 
-    $self->_wheel->shutdown_stdin;
+    if ( my $wheel = $self->_wheel ) {
+       $wheel->shutdown_stdin;
+    }
 };
 
 foreach my $sig qw(term kill) {

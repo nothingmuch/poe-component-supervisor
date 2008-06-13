@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+sub POE::Kernel::USE_SIGCHLD () { 1 }
+
 use strict;
 use warnings;
 
@@ -29,7 +31,7 @@ use POE;
                             program => sub {
                                 while (1) {
                                     print "$$\n";
-                                    sleep 1;
+                                    select(undef,undef,undef,0.1);
                                 }
                             },
                             stdout_callback => sub { $pid ||= 0 + $_[ARG0]; $output++ },
@@ -37,7 +39,7 @@ use POE;
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 2 );
+                $_[KERNEL]->delay_set( stop_child => 0.1 );
             },
             stop_child => sub {
                 $supervisor->logger->debug("delay expired, stoping child");
@@ -48,8 +50,8 @@ use POE;
 
     $poe_kernel->run;
 
-    cmp_ok( $output, '>=', 2, "output" );
-    cmp_ok( $output, '<=', 3, "output" );
+    cmp_ok( $output, '>=', 1, "output" );
+    cmp_ok( $output, '<=', 2, "output" );
 
     isnt( $pid, $$, "pid was diff" );
 }
@@ -69,7 +71,6 @@ use POE;
                         $child = POE::Component::Supervisor::Supervised::Proc->new(
                             program => sub {
                                 print "$$\n";
-                                sleep 1;
                                 exit 0; # it's transient, so exit with status 0 is acceptable
                             },
                             stdout_callback => sub { push @pids, 0 + $_[ARG0] },
@@ -102,7 +103,6 @@ use POE;
                         $child = POE::Component::Supervisor::Supervised::Proc->new(
                             program => sub {
                                 print "$$\n";
-                                sleep 1;
                                 exit 1;
                             },
                             stdout_callback => sub { push @pids, 0 + $_[ARG0] },
@@ -110,7 +110,7 @@ use POE;
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 4 );
+                $_[KERNEL]->delay_set( stop_child => 0.5 );
             },
             stop_child => sub {
                 $supervisor->stop($child);
@@ -142,12 +142,7 @@ use POE;
                             my $i = $_;
                             POE::Component::Supervisor::Supervised::Proc->new(
                                 program => sub {
-                                    my $counter = 0;
                                     print "$$\n";
-                                    while ($counter < 5) {
-                                        sleep 1;
-                                        $counter++;
-                                    }
                                     exit 0;
                                 },
                                 stdout_callback => sub { push @pids, 0 + $_[ARG0] },

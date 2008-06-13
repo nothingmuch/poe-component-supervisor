@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+sub POE::Kernel::USE_SIGCHLD () { 1 }
+
 use strict;
 use warnings;
 
@@ -26,7 +28,7 @@ use POE;
                 $supervisor = POE::Component::Supervisor->new(
                     children => [
                         $child = POE::Component::Supervisor::Supervised::Proc->new(
-                            until_kill => 5,
+                            until_kill => 2,
                             program => sub {
 
                                 foreach my $sig ( values %SIG ) {
@@ -43,7 +45,7 @@ use POE;
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 2, $supervisor );
+                $_[KERNEL]->delay_set( stop_child => 1, $supervisor );
             },
             stop_child => sub {
                 $supervisor->stop($child);
@@ -53,9 +55,9 @@ use POE;
 
     $poe_kernel->run;
 
-    # until_kill + stop_child delay == 5 + 2 == 7
-    cmp_ok( $output, '>=', 6, "output" );
-    cmp_ok( $output, '<=', 8, "output" );
+    # until_kill + stop_child delay == 2 + 1 == 3
+    cmp_ok( $output, '>=', 2, "output" );
+    cmp_ok( $output, '<=', 4, "output" );
 
     isnt( $pid, $$, "pid was diff" );
 }
