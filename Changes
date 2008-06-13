@@ -1,3 +1,7 @@
+0.03
+    - Try to improve robustness of test suite
+    - handle error condition
+
 0.02
     - Add ::Session to the distribution now that POE 1.0000 is released
 
