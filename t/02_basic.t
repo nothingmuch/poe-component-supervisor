@@ -20,9 +20,9 @@ use POE;
     my $output = 0;
     my $pid;
 
-    my ( $supervisor, $child );
+    my ( $supervisor, $child, $session );
 
-    POE::Session->create(
+    $session = POE::Session->create(
         inline_states => {
             _start => sub {
                 $supervisor = POE::Component::Supervisor->new(
@@ -31,15 +31,23 @@ use POE;
                             program => sub {
                                 while (1) {
                                     print "$$\n";
-                                    select(undef,undef,undef,0.1);
+                                    sleep 2;
                                 }
                             },
-                            stdout_callback => sub { $pid ||= 0 + $_[ARG0]; $output++ },
+                            stdout_callback => sub {
+                                $pid ||= 0 + $_[ARG0];
+                                $output++;
+                                $supervisor->stop($child);
+                                $poe_kernel->post( $session, "clear_alarm" );
+                            },
                         ),
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 0.1 );
+                $_[KERNEL]->delay_set( stop_child => 1.5 );
+            },
+            clear_alarm => sub {
+                $_[KERNEL]->alarm_remove_all;
             },
             stop_child => sub {
                 $supervisor->logger->debug("delay expired, stoping child");
@@ -93,9 +101,9 @@ use POE;
 
     my @pids;
 
-    my ( $supervisor, $child );
+    my ( $supervisor, $child, $session );
 
-    POE::Session->create(
+    $session = POE::Session->create(
         inline_states => {
             _start => sub {
                 $supervisor = POE::Component::Supervisor->new(
@@ -106,11 +114,20 @@ use POE;
                                 exit 1;
                             },
                             stdout_callback => sub { push @pids, 0 + $_[ARG0] },
+                            stopped_callback => sub {
+                                if ( @pids >= 2 ) {
+                                    $supervisor->stop($child);
+                                    $poe_kernel->post( $session, "clear_alarm" );
+                                }
+                            },
                         ),
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 0.5 );
+                $_[KERNEL]->delay_set( stop_child => 1 );
+            },
+            clear_alarm => sub {
+                $_[KERNEL]->alarm_remove_all;
             },
             stop_child => sub {
                 $supervisor->stop($child);
