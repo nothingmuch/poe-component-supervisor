@@ -28,6 +28,12 @@ has stopped => (
     writer => "_stopped",
 );
 
+has [map { "${_}_callback" } qw(spawned stopped)] => (
+    isa => "CodeRef",
+    is  => "rw",
+    required => 0,
+);
+
 requires "stop";
 
 requires "is_running";
@@ -46,6 +52,10 @@ sub notify_spawn {
     $self->_spawned(1);
 
     $self->notify_supervisor( spawned => @args );
+
+    if ( my $cb = $self->spawned_callback ) {
+        $self->$cb(@args);
+    }
 }
 
 sub notify_stop {
@@ -54,6 +64,10 @@ sub notify_stop {
     $self->_stopped(1);
 
     $self->notify_supervisor( stopped => @args );
+
+    if ( my $cb = $self->stopped_callback ) {
+        $self->$cb(@args);
+    }
 }
 
 __PACKAGE__
