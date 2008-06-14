@@ -1,3 +1,9 @@
+0.04
+    - spawned_callback
+    - stopped_callback
+    - yet another attempt at removing bogus test fails, by relying less on
+      timing
+
 0.03
     - Try to improve robustness of test suite
     - handle error condition
