@@ -28,7 +28,7 @@ use POE;
                 $supervisor = POE::Component::Supervisor->new(
                     children => [
                         $child = POE::Component::Supervisor::Supervised::Proc->new(
-                            until_kill => 2,
+                            until_kill => 0.2,
                             program => sub {
 
                                 foreach my $sig ( values %SIG ) {
@@ -37,7 +37,7 @@ use POE;
 
                                 while (1) {
                                     print "$$\n";
-                                    sleep 1;
+                                    select(undef,undef,undef,0.1);
                                 }
                             },
                             stdout_callback => sub { $pid ||= 0 + $_[ARG0]; $output++ },
@@ -45,7 +45,7 @@ use POE;
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 1, $supervisor );
+                $_[KERNEL]->delay_set( stop_child => 0.1, $supervisor );
             },
             stop_child => sub {
                 $supervisor->stop($child);
@@ -57,7 +57,7 @@ use POE;
 
     # until_kill + stop_child delay == 2 + 1 == 3
     cmp_ok( $output, '>=', 2, "output" );
-    cmp_ok( $output, '<=', 4, "output" );
+    cmp_ok( $output, '<=', 4 + 3, "output" ); # we are willing to tolerate up to 3 extra outputs, but it should be between 2 and 4
 
     isnt( $pid, $$, "pid was diff" );
 }
