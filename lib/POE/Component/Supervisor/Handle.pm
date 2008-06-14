@@ -100,6 +100,16 @@ The L<POE::Component::Supervisor> utilizing over this handle.
 
 The child descriptor this handle was spawned for.
 
+=item spawned_callback
+
+=item stopped_callback
+
+These callbacks are called as handle methods with the arguments sent to the
+supervisor.
+
+Note that they are not invoked with L<POE>'s calling convention, but rather
+arbitrary arguments from the supervision handle.
+
 =back
 
 =head1 METHODS
