@@ -124,7 +124,7 @@ use POE;
                     ],
                 );
 
-                $_[KERNEL]->delay_set( stop_child => 1 );
+                $_[KERNEL]->delay_set( stop_child => 3 );
             },
             clear_alarm => sub {
                 $_[KERNEL]->alarm_remove_all;
