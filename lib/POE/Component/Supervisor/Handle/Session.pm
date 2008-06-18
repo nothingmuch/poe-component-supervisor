@@ -103,15 +103,23 @@ event exception => sub {
 
     $self->logger->debug("tracked sessions: @{ $self->_sessions }");
 
-    my $tracked = $self->_sessions->includes($session);
+    my $sessions = $self->_sessions;
+    my $tracked_session = $session;
 
-    $self->logger->debug( join " ",
-        $session,
-        ( $tracked ? () : "(untracked)" ), #($session == $self->session ? "(self)" : "(untracked)") ),
-        "generated an error: $error"
-    );
+    until ( $sessions->includes($tracked_session) ) {
+        $tracked_session = $kernel->_data_ses_get_parent($tracked_session); # FIXME violates POE::Kernel's encapsulation
+    }
 
-    if ( $self->_sessions->includes($session) ) {
+    {
+        no warnings 'uninitialized';
+        $self->logger->warning( join " ",
+            $session,
+            ( $session == $tracked_session ? () : "(untracked)" ),
+            "generated an error: $error"
+        );
+    }
+
+    if ( $tracked_session ) {
         # sig_handled does not keep the child alive, but prevents the kernel from closing
         $kernel->sig_handled;
         $self->_error($error);
@@ -171,7 +179,16 @@ sub stop {
 event stop_tracked_sessions => sub {
     my ( $self, $kernel ) = @_[OBJECT, KERNEL];
 
-    foreach my $session ( $self->_sessions->difference( $self->_dead_sessions )->members ) {
+    my @roots = $self->_sessions->difference( $self->_dead_sessions )->members;
+
+    my @sessions;
+
+    while ( my $s = shift @roots ) {
+        push @roots, $kernel->_data_ses_get_children($s);
+        push @sessions, $s;
+    }
+
+    foreach my $session ( reverse @sessions ) {
         $kernel->_data_ses_stop( $session );
     }
 };
