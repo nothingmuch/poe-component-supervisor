@@ -8,7 +8,7 @@ with qw(
     POE::Component::Supervisor::LogDispatch
 );
 
-#use POE::API::Peek;
+use POE::API::Peek;
 
 #use MooseX::Types::Set::Object;
 use Set::Object ();
@@ -106,8 +106,9 @@ event exception => sub {
     my $sessions = $self->_sessions;
     my $tracked_session = $session;
 
+    my $peek = POE::API::Peek->new;
     until ( $sessions->includes($tracked_session) ) {
-        $tracked_session = $kernel->_data_ses_get_parent($tracked_session); # FIXME violates POE::Kernel's encapsulation
+        $tracked_session = $peek->get_session_parent($tracked_session); # FIXME violates POE::Kernel's encapsulation
     }
 
     {
@@ -183,8 +184,10 @@ event stop_tracked_sessions => sub {
 
     my @sessions;
 
+    my $peek = POE::API::Peek->new;
+
     while ( my $s = shift @roots ) {
-        push @roots, $kernel->_data_ses_get_children($s);
+        push @roots, $peek->get_session_children($s);
         push @sessions, $s;
     }
 

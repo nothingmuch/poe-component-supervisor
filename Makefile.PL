@@ -13,6 +13,7 @@ WriteMakefile(
 	PREREQ_PM    => {
         'Test::use::ok' => 0,
         'POE' => "1.0002", # DIE in parents
+        'POE::API::Peek' => 0, # FIXME a recent one
         'MooseX::POE' => "0.07",
         'MooseX::LogDispatch' => 0,
         'Log::Dispatch::Config::TestLog' => 0,
