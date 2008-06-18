@@ -8,6 +8,8 @@ use Moose::Util::TypeConstraints;
 use POE::Component::Supervisor::Supervised;
 use POE::Component::Supervisor::Handle;
 
+use Devel::PartialDump;
+
 our $VERSION = "0.04";
 
 with qw(
@@ -174,7 +176,7 @@ event spawned => sub {
 
     $kernel->refcount_increment( $self->get_session_id(), "handles" );
 
-    $self->logger->info("child " . $self->_child_id($child) . " spawned " . join($", map { defined($_) ? $_ : "undef" } @args));
+    $self->logger->info("child " . $self->_child_id($child) . " spawned " . Devel::PartialDump::dump(@args));
 };
 
 event spawn => sub {
