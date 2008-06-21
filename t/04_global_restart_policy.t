@@ -33,7 +33,7 @@ foreach my $policy qw(one all rest) {
                                     if ( $i == 3 ) {
                                         exit 1;
                                     } else {
-                                        sleep;
+                                        sleep 10; # not indefinitely, hangs in some cases
                                     }
                                 },
                                 stdout_callback => sub {
