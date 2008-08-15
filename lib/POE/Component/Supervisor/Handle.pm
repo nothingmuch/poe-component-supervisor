@@ -12,7 +12,7 @@ has child => (
 has supervisor => (
     isa => "POE::Component::Supervisor",
     is  => "rw",
-    is_weak  => 1,
+    weak_ref  => 1,
     required => 1,
 );
 
