@@ -188,13 +188,14 @@ event stop_tracked_sessions => sub {
 
     my $peek = POE::API::Peek->new;
 
+    # FIXME find a way to remove this recursion
     while ( my $s = shift @roots ) {
         push @roots, $peek->get_session_children($s);
         push @sessions, $s;
     }
 
     foreach my $session ( reverse @sessions ) {
-        $kernel->_data_ses_stop( $session );
+        $kernel->signal( $session => "KILL" );
     }
 };
 
