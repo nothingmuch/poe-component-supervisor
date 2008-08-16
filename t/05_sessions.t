@@ -161,3 +161,67 @@ use POE;
     is( $stopped, 4, "child sessions stopped" );
 }
 
+{
+    # explicit stop scenario
+
+    my @pids;
+
+    my ( $supervisor, $child );
+
+    my ( $started, $blah, $stopped, $cb );
+
+    POE::Session->create(
+        inline_states => {
+            _start => sub {
+                $supervisor = POE::Component::Supervisor->new(
+                    children => [
+                        $child = POE::Component::Supervisor::Supervised::Session->new(
+                            start_callback => sub {
+                                POE::Session->create(
+                                    inline_states => {
+                                        _start => sub {
+                                            $started++;
+                                            $_[KERNEL]->call( $_[SESSION], "blah");
+                                            POE::Session->create(
+                                                inline_states => {
+                                                    _start => sub {
+                                                        $_[KERNEL]->delay_set( oink => 1 );
+                                                    },
+                                                    oink => sub {
+                                                        $blah++,
+                                                    },
+                                                    _stop => sub {
+                                                        $stopped++;
+                                                    },
+                                                },
+                                            );
+                                            $_[KERNEL]->delay_set( blah => 1 );
+                                        },
+                                        blah => sub {
+                                            $blah++;
+                                        },
+                                        _stop => sub {
+                                            $stopped++;
+                                        },
+                                    },
+                                );
+                            },
+                            spawned_callback => sub {
+                                my $handle = shift;
+                                $cb++;
+                                $handle->supervisor->stop($handle->child);
+                            }
+                        ),
+                    ],
+                );
+            },
+        },
+    );
+
+    $poe_kernel->run;
+
+    is( $cb, 1, "spawned callback" );
+    is( $started, 1, "subsession started" );
+    is( $blah, 1, "blah event delivered only once" );
+    is( $stopped, 2, "child and grandchild sessions stopped normally" );
+}
