@@ -3,17 +3,23 @@
 package POE::Component::Supervisor::Handle;
 use Moose::Role;
 
+use POE::Component::Supervisor::Interface ();
+use POE::Component::Supervisor::Supervised ();
+
+with qw(POE::Component::Supervisor::Handle::Interface);
+
 has child => (
-    isa => "POE::Component::Supervisor::Supervised",
+    does => "POE::Component::Supervisor::Supervised",
     is  => "ro",
     required => 1,
 );
 
 has supervisor => (
-    isa => "POE::Component::Supervisor",
+    does => "POE::Component::Supervisor::Interface",
     is  => "rw",
     weak_ref  => 1,
     required => 1,
+    handles => [qw(notify_spawned notify_stopped)],
 );
 
 has spawned => (
@@ -34,24 +40,14 @@ has [map { "${_}_callback" } qw(spawned stopped)] => (
     required => 0,
 );
 
-requires "stop";
-
-requires "is_running";
-
 sub stop_for_restart { shift->stop(@_) }
-
-sub notify_supervisor {
-    my ( $self, $event, @args ) = @_;
-
-    $self->supervisor->yield( $event => $self->child, @args );
-}
 
 sub notify_spawn {
     my ( $self, @args ) = @_;
 
     $self->_spawned(1);
 
-    $self->notify_supervisor( spawned => @args );
+    $self->notify_spawned( $self->child, @args);
 
     if ( my $cb = $self->spawned_callback ) {
         $self->$cb(@args);
@@ -63,7 +59,7 @@ sub notify_stop {
 
     $self->_stopped(1);
 
-    $self->notify_supervisor( stopped => @args );
+    $self->notify_stopped( $self->child, @args);
 
     if ( my $cb = $self->stopped_callback ) {
         $self->$cb(@args);

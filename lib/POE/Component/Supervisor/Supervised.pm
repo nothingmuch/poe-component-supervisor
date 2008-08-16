@@ -5,6 +5,8 @@ use Moose::Role;
 
 use Moose::Util::TypeConstraints;
 
+with qw(POE::Component::Supervisor::Supervised::Interface);
+
 has handle_class => (
     isa => "ClassName",
     is  => "rw",

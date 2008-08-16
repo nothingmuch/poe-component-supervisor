@@ -15,6 +15,7 @@ use Hash::Util::FieldHash::Compat qw(idhash);
 our $VERSION = "0.04";
 
 with qw(
+    POE::Component::Supervisor::Interface
     MooseX::POE::Aliased
     POE::Component::Supervisor::LogDispatch
 );
@@ -65,13 +66,13 @@ sub _child_id {
     if ( defined ( my $id = $self->_children_hash->{$child}{id} ) ) {
         return $id;
     } else {
-        die "unknown child $child";
+        confess "unknown child $child";
     }
 }
 
 sub _child_handle {
     my ( $self, $child ) = @_;
-    $self->_children_hash->{$child}{handle}
+    $self->_children_hash->{$child}{handle};
 }
 
 # used to track which children are currently being stopped for the purpose of
@@ -176,6 +177,16 @@ sub stop {
             }
         }
     }
+}
+
+sub notify_spawned {
+    my ( $self, @args ) = @_;
+    $self->yield( spawned => @args );
+}
+
+sub notify_stopped {
+    my ( $self, @args ) = @_;
+    $self->yield( stopped => @args );
 }
 
 event spawned => sub {
