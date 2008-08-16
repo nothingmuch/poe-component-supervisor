@@ -35,10 +35,22 @@ has restart_policy => (
 
 has children => (
     isa => "ArrayRef",
+    init_arg => undef,
     is  => "ro",
     auto_deref => 1,
-    required   => 1,
+    default => sub { [] },
 );
+
+has _last_child_id => (
+    isa => "Int",
+    is  => "rw",
+    default => 0,
+);
+
+sub _next_child_id {
+    my $self = shift;
+    $self->_last_child_id( $self->_last_child_id + 1 );
+}
 
 has _children_hash => (
     isa => "HashRef",
@@ -103,37 +115,32 @@ event exception => sub {
 sub _register_child {
     my ( $self, $new_child ) = @_;
 
-    my $id;
-
-    my $index = 0;
-
-    my $children = $self->children;
-
-    foreach my $child ( @$children ) {
-        $id = $index, last if $child == $new_child;
-    } continue { $index++ }
-
-    unless ( defined $id ) {
-        push @$children, $new_child;
-        $id = $#$children;
+    $self->_children_hash->{$new_child} ||= do {
+        push @{ $self->children }, $new_child;
+        $self->_new_child_registration($new_child);
     }
+}
 
-    # index by 
-    $self->_children_hash->{$new_child} = { id => $id };
+sub _new_child_registration {
+    my ( $self, $new_child ) = @_;
+    return { id => $self->_next_child_id };
 }
 
 sub _unregister_child {
     my ( $self, $child ) = @_;
 
-    @{ $self->children } = grep { $_ != $child } @{ $self->children };
+    if ( delete $self->_children_hash->{$child} ) {
+        @{ $self->children } = grep { $_ != $child } @{ $self->children };
+    }
 
-    delete $self->_children_hash->{$child};
 }
 
 sub BUILD {
     my ( $self, $params ) = @_;
 
-    $self->start($self->children);
+    if ( my $children = $params->{children} ) {
+        $self->start(@$children);
+    }
 }
 
 sub start {
