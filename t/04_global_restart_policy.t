@@ -64,7 +64,7 @@ foreach my $policy qw(one all rest) {
 
     $poe_kernel->run;
 
-    is( scalar(keys %pids), 5, "5 children" );
+    is( scalar(keys %pids), 5, "5 children ($policy)" );
 
     # the numbers of PIDs we expect to have vary based on the policy
     my @before = ( $policy eq 'all' ? ( '>=', 2 ) : ( '==', 1 ));
