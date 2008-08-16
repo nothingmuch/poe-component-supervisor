@@ -6,6 +6,8 @@ use Moose::Role;
 use POE::Component::Supervisor::Interface ();
 use POE::Component::Supervisor::Supervised ();
 
+use namespace::clean -except => 'meta';
+
 with qw(POE::Component::Supervisor::Handle::Interface);
 
 has child => (

@@ -12,6 +12,8 @@ use Devel::PartialDump;
 
 use Hash::Util::FieldHash::Compat qw(idhash);
 
+use namespace::clean -except => 'meta';
+
 our $VERSION = "0.04";
 
 with qw(

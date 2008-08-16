@@ -3,9 +3,11 @@
 package POE::Component::Supervisor::Supervised::Proc;
 use Moose;
 
-with qw(POE::Component::Supervisor::Supervised);
-
 use POE::Component::Supervisor::Handle::Proc;
+
+use namespace::clean -except => 'meta';
+
+with qw(POE::Component::Supervisor::Supervised);
 
 has '+handle_class' => ( default => "POE::Component::Supervisor::Handle::Proc" );
 

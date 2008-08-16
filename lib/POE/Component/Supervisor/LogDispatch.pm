@@ -3,6 +3,8 @@
 package POE::Component::Supervisor::LogDispatch;
 use Moose::Role;
 
+use namespace::clean -except => 'meta';
+
 with qw(MooseX::LogDispatch);
 
 # borked due to role impl... =P

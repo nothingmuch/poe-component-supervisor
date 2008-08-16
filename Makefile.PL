@@ -19,6 +19,7 @@ WriteMakefile(
         'Log::Dispatch::Config::TestLog' => 0,
         'Set::Object' => 0,
         'Hash::Util::FieldHash::Compat' => 0,
+        'namespace::clean' => 0,
 	},
 );
 

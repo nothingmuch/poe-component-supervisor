@@ -7,6 +7,8 @@ use POSIX qw(WIFSIGNALED WIFEXITED WEXITSTATUS WTERMSIG);
 
 use POE::Wheel::Run;
 
+use namespace::clean -except => 'meta';
+
 with qw(
     POE::Component::Supervisor::Handle
     POE::Component::Supervisor::LogDispatch

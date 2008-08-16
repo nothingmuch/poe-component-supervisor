@@ -13,6 +13,8 @@ use POE::API::Peek;
 #use MooseX::Types::Set::Object;
 use Set::Object ();
 
+use namespace::clean -except => 'meta';
+
 has implicit_tracking => (
     isa => "Bool",
     is  => "ro",

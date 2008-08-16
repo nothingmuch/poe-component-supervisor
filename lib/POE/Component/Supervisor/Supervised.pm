@@ -5,6 +5,8 @@ use Moose::Role;
 
 use Moose::Util::TypeConstraints;
 
+use namespace::clean -except => 'meta';
+
 with qw(POE::Component::Supervisor::Supervised::Interface);
 
 has handle_class => (
