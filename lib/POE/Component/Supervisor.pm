@@ -10,14 +10,14 @@ use POE::Component::Supervisor::Handle;
 
 use Devel::PartialDump;
 
+use Hash::Util::FieldHash::Compat qw(idhash);
+
 our $VERSION = "0.04";
 
 with qw(
     MooseX::POE::Aliased
     POE::Component::Supervisor::LogDispatch
 );
-
-use Tie::RefHash;
 
 sub run {
     my $self = shift->new(@_);
@@ -44,7 +44,7 @@ has _children_hash => (
     isa => "HashRef",
     is  => "ro",
     init_arg => undef,
-    default  => sub { tie my %h, 'Tie::RefHash'; \%h },
+    default  => sub { idhash my %h },
 );
 
 sub _child_id {
@@ -68,7 +68,7 @@ has _stopping_for_restart => (
     isa => "HashRef",
     is  => "ro",
     init_arg => undef,
-    default  => sub { tie my %h, 'Tie::RefHash'; \%h },
+    default  => sub { idhash my %h },
 );
 
 # when children that are being restarted have stopped they are tracked here
@@ -77,7 +77,7 @@ has _pending_restart => (
     isa => "HashRef",
     is  => "ro",
     init_arg => undef,
-    default  => sub { tie my %h, 'Tie::RefHash'; \%h },
+    default  => sub { idhash my %h },
 );
 
 sub START {

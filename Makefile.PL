@@ -18,7 +18,7 @@ WriteMakefile(
         'MooseX::LogDispatch' => 0,
         'Log::Dispatch::Config::TestLog' => 0,
         'Set::Object' => 0,
-        'Tie::RefHash' => 0,
+        'Hash::Util::FieldHash::Compat' => 0,
 	},
 );
 
