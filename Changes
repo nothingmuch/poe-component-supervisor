@@ -1,3 +1,12 @@
+0.05
+    - Refactor into interfaces so that handles are usable with completely
+      different supervisor implementations
+    - Fix a leak relating to incorrect usage of MX::POE
+    - Use terminal signals to terminate sessions instead of internal API
+    - namespace::clean
+    - make_immutable
+    - Hash::Util::FieldHash::Compat instead of Tie::RefHash
+
 0.04
     - spawned_callback
     - stopped_callback
