@@ -44,6 +44,13 @@ has children => (
     default => sub { [] },
 );
 
+has _children_tmp => (
+    isa => "ArrayRef",
+    is  => "rw",
+    init_arg => undef,
+    clearer => "_clear_children_tmp",
+);
+
 has _last_child_id => (
     isa => "Int",
     is  => "rw",
@@ -101,6 +108,11 @@ sub START {
     $kernel->sig( DIE => "exception" );
 
     $self->logger->info("starting supervisor $self in process $$");
+
+    if ( my $children = $self->_children_tmp ) {
+        $self->_clear_children_tmp;
+        $self->start(@$children);
+    }
 }
 
 sub STOP {
@@ -142,7 +154,7 @@ sub BUILD {
     my ( $self, $params ) = @_;
 
     if ( my $children = $params->{children} ) {
-        $self->start(@$children);
+        $self->_children_tmp($children);
     }
 }
 
