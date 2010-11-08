@@ -113,11 +113,6 @@ has exit_signal => (
     writer    => "_exit_signal",
 );
 
-has _last_sent_signal => (
-    isa => "Int",
-
-);
-
 sub STOP {
     $_[OBJECT]->logger->debug("stopping child handle session $_[SESSION]");
 }
