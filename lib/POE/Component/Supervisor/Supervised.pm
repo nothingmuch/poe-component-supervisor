@@ -36,7 +36,7 @@ sub _get_handle_attributes {
         map { $_->clone }
         grep { not $meta->has_attribute($_->name) }
         grep { defined $_->init_arg } grep { $_->name !~ /^(?: child | supervisor | logger )$/x }
-        $handle_meta->compute_all_applicable_attributes;
+        $handle_meta->get_all_attributes;
 }
 
 sub _inherit_attributes_from_handle_class {
