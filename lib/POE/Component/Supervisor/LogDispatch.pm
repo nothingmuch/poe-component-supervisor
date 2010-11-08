@@ -28,7 +28,7 @@ POE::Component::Supervisor::LogDispatch - Logging role
 
 =head1 SYNOPSIS
 
-	with qw(POE::Component::Supervisor::LogDispatch);
+    with qw(POE::Component::Supervisor::LogDispatch);
 
 =head1 DESCRIPTION
 

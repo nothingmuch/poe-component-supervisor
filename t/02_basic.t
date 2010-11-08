@@ -50,7 +50,7 @@ use POE;
                 $_[KERNEL]->alarm_remove_all;
             },
             stop_child => sub {
-                $supervisor->logger->debug("delay expired, stoping child");
+                $supervisor->logger->debug("delay expired, stopping child");
                 $supervisor->stop($child);
             },
         },

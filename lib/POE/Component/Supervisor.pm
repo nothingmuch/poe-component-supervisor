@@ -379,7 +379,7 @@ POE::Component::Supervisor - Erlang inspired babysitting
 
     use POE;
 
-	use POE::Component::Supervisor;
+    use POE::Component::Supervisor;
 
     POE::Component::Supervisor->new(
         children => [
@@ -510,8 +510,8 @@ Yuval Kogman E<lt>yuval.kogman@iinteractive.com<gt>
 
 =head1 COPYRIGHT
 
-	Copyright (c) 2008 Infinity Interactive. All rights reserved
-	This program is free software; you can redistribute
-	it and/or modify it under the same terms as Perl itself.
+    Copyright (c) 2008, 2010 Infinity Interactive, Yuval Kogman. All rights
+    reserved This program is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself.
 
 =cut
