@@ -131,8 +131,10 @@ event exception => sub {
     }
 };
 
-event _child => sub {
+sub CHILD {
     my ( $self, $action, $child_session ) = @_[OBJECT, ARG0, ARG1];
+
+    $self->logger->debug("child event $action for $child_session");
 
     my $method = "_child_$action";
 
@@ -141,7 +143,7 @@ event _child => sub {
     } else { 
         return;
     }
-};
+}
 
 sub _child_create {
     my ( $self, $session ) = @_[OBJECT, ARG1, ARG2];
@@ -176,15 +178,19 @@ sub _child_gain {
 
 sub stop {
     my $self = shift;
+
+    $self->logger->debug("stopping $self");
+
     $self->yield("stop_tracked_sessions");
 }
 
 event stop_tracked_sessions => sub {
     my ( $self, $kernel ) = @_[OBJECT, KERNEL];
 
-    my @roots = $self->_sessions->difference( $self->_dead_sessions )->members;
-
-    $kernel->signal( $_ => "KILL" ) for @roots;
+    if ( my @roots = $self->_sessions->difference( $self->_dead_sessions )->members ) {
+        $self->logger->debug("$self killing tracked sessions @roots");
+        $kernel->signal( $_ => "KILL" ) for @roots;
+    }
 };
 
 sub is_running {

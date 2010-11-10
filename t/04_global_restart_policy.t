@@ -15,6 +15,9 @@ use ok 'POE::Component::Supervisor::Supervised::Session';
 
 use POE;
 
+my $n = 10;
+my $mid = int( ($n + 1) / 2 );
+
 my @classes = qw(Proc Session);
 foreach my $class ( @classes, undef, undef ) {
     foreach my $policy qw(one all rest) {
@@ -37,7 +40,7 @@ foreach my $class ( @classes, undef, undef ) {
                                         program => sub {
                                             $| = 1;
                                             print "$i proc=$$\n";
-                                            if ( $i == 5 ) {
+                                            if ( $i == $mid ) {
                                                 exit 1;
                                             } else {
                                                 sleep 10; # not indefinitely, hangs in some cases
@@ -74,7 +77,7 @@ foreach my $class ( @classes, undef, undef ) {
                                                         );
                                                     },
                                                     body => sub {
-                                                        if ( $i == 5 ) {
+                                                        if ( $i == $mid ) {
                                                             die "OI";
                                                         } else {
                                                             $_[KERNEL]->delay_set( blah => 10 );
@@ -103,21 +106,15 @@ foreach my $class ( @classes, undef, undef ) {
 
         $poe_kernel->run;
 
-        is( scalar(keys %pids), 10, "10 children ($policy, " . ($class  || "random") . ")" );
+        is( scalar(keys %pids), $n, "10 children ($policy, " . ($class  || "random") . ")" );
 
         # the numbers of PIDs we expect to have vary based on the policy
         my @before = ( $policy eq 'all' ? ( '>=', 2 ) : ( '==', 1 ));
         my @after  = ( $policy eq 'one' ? ( '==', 1 ) : ( '>=', 2 ) );
 
-        cmp_ok( scalar(@{ $pids{1} }), $before[0], $before[1], "child 1 had $before[1]" );
-        cmp_ok( scalar(@{ $pids{2} }), $before[0], $before[1], "child 2 had $before[1]" );
-        cmp_ok( scalar(@{ $pids{3} }), $before[0], $before[1], "child 3 had $before[1]" );
-        cmp_ok( scalar(@{ $pids{3} }), $before[0], $before[1], "child 4 had $before[1]" );
-        cmp_ok( scalar(@{ $pids{5} }), '>=',      2,           "child 5 has 2" );
-        cmp_ok( scalar(@{ $pids{6} }), $after[0], $after[1],   "child 6 had $after[1]" );
-        cmp_ok( scalar(@{ $pids{7} }), $after[0], $after[1],   "child 7 had $after[1]" );
-        cmp_ok( scalar(@{ $pids{8} }), $after[0], $after[1],   "child 8 had $after[1]" );
-        cmp_ok( scalar(@{ $pids{9} }), $after[0], $after[1],   "child 9 had $after[1]" );
+        cmp_ok( scalar(@{ $pids{$_} }), $before[0], $before[1], "child $_ had $before[1]" ) for 1 .. $mid-1;
+        cmp_ok( scalar(@{ $pids{$mid} }), '>=',      2,           "child $mid has 2" );
+        cmp_ok( scalar(@{ $pids{$_} }), $after[0], $after[1],   "child $_ had $after[1]" ) for $mid+1 .. $n;
     }
 }
 

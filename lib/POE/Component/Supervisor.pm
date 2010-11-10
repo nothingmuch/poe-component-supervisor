@@ -130,6 +130,8 @@ event exception => sub {
 sub _register_child {
     my ( $self, $new_child ) = @_;
 
+    $self->logger->debug("registering child $new_child");
+
     $self->_children_hash->{$new_child} ||= do {
         push @{ $self->children }, $new_child;
         $self->_new_child_registration($new_child);
@@ -143,6 +145,8 @@ sub _new_child_registration {
 
 sub _unregister_child {
     my ( $self, $child ) = @_;
+
+    $self->logger->debug("unregistering child $child");
 
     if ( delete $self->_children_hash->{$child} ) {
         @{ $self->children } = grep { $_ != $child } @{ $self->children };
