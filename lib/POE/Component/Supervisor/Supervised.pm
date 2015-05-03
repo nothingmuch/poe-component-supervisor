@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package POE::Component::Supervisor::Supervised;
 use Moose::Role;
 
@@ -56,7 +54,7 @@ sub create_handle {
     my ( $self, @args ) = @_;
 
     my $class = ref $self;
-    
+
     my @handle_attrs = do {
         no strict 'refs';
         @{ "${class}::_handle_attrs" };
