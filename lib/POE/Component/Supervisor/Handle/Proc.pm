@@ -165,7 +165,7 @@ sub _wrapped_program {
     return $program;
 }
 
-foreach my $event qw(stdout stderr stdin) {
+foreach my $event (qw(stdout stderr stdin)) {
     my $cb_name = "${event}_callback";
     event $event => sub {
         if ( my $cb = $_[OBJECT]->$cb_name ) {
@@ -247,7 +247,7 @@ event _close_stdin => sub {
     }
 };
 
-foreach my $sig qw(term kill) {
+foreach my $sig (qw(term kill)) {
     my $SIG = uc($sig);
 
     my $event = "_${sig}_loop";
