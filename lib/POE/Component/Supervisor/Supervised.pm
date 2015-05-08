@@ -75,7 +75,7 @@ sub construct_handle {
 requires 'is_abnormal_exit';
 
 has restart_policy => (
-    isa => enum(__PACKAGE__ . "::RestartPolicy" => qw(permanent transient temporary)),
+    isa => enum(__PACKAGE__ . "::RestartPolicy" => [qw(permanent transient temporary)]),
     is  => "rw",
     default => "transient",
 );

@@ -29,7 +29,7 @@ sub run {
 sub _build_alias { undef }
 
 has restart_policy => (
-    isa => enum(__PACKAGE__ . "::RestartPolicy" => qw(one all rest)),
+    isa => enum(__PACKAGE__ . "::RestartPolicy" => [qw(one all rest)]),
     is  => "rw",
     default => "one",
 );
