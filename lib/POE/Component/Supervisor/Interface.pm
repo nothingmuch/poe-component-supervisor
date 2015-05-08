@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package POE::Component::Supervisor::Interface;
 use Moose::Role;
 
@@ -25,7 +23,7 @@ POE::Component::Supervisor::Interface - Minimal interface for supervisors
     package My::Supervisor;
     with qw(POE::Component::Supervisor::Interface);
 
-    
+
 
 =head1 DESCRIPTION
 

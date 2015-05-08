@@ -20,7 +20,7 @@ my $mid = int( ($n + 1) / 2 );
 
 my @classes = qw(Proc Session);
 foreach my $class ( @classes, undef, undef ) {
-    foreach my $policy qw(one all rest) {
+    foreach my $policy (qw(one all rest)) {
         my %pids;
 
         my ( $supervisor, $session );
@@ -100,7 +100,7 @@ foreach my $class ( @classes, undef, undef ) {
                 stop_children => sub {
                     $supervisor->stop;
                 },
-                
+
             },
         );
 

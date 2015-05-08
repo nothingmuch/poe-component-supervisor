@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package POE::Component::Supervisor::Handle;
 use Moose::Role;
 
@@ -79,7 +77,7 @@ __END__
 POE::Component::Supervisor::Handle - Base role for supervision handles
 
 =head1 SYNOPSIS
-    
+
     # see Handle::Proc and Handle::Session
 
 =head1 DESCRIPTION

@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package POE::Component::Supervisor::Handle::Proc;
 use MooseX::POE;
 
@@ -131,7 +129,7 @@ sub START {
         $self->wheel_parameters,
         Program => $program,
     );
-    
+
     my $pid = $wheel->PID;
 
     $self->_wheel($wheel);
@@ -165,7 +163,7 @@ sub _wrapped_program {
     return $program;
 }
 
-foreach my $event qw(stdout stderr stdin) {
+foreach my $event (qw(stdout stderr stdin)) {
     my $cb_name = "${event}_callback";
     event $event => sub {
         if ( my $cb = $_[OBJECT]->$cb_name ) {
@@ -204,7 +202,7 @@ event _cleanup => sub {
        $wheel->shutdown_stdin;
        $self->_clear_wheel;
     }
-    
+
     $kernel->alarm_remove_all();
 
     $kernel->refcount_decrement( $self->get_session_id, __PACKAGE__ );
@@ -247,7 +245,7 @@ event _close_stdin => sub {
     }
 };
 
-foreach my $sig qw(term kill) {
+foreach my $sig (qw(term kill)) {
     my $SIG = uc($sig);
 
     my $event = "_${sig}_loop";

@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 package POE::Component::Supervisor::Supervised;
 use Moose::Role;
 
@@ -56,7 +54,7 @@ sub create_handle {
     my ( $self, @args ) = @_;
 
     my $class = ref $self;
-    
+
     my @handle_attrs = do {
         no strict 'refs';
         @{ "${class}::_handle_attrs" };
@@ -77,7 +75,7 @@ sub construct_handle {
 requires 'is_abnormal_exit';
 
 has restart_policy => (
-    isa => enum(__PACKAGE__ . "::RestartPolicy" => qw(permanent transient temporary)),
+    isa => enum(__PACKAGE__ . "::RestartPolicy" => [qw(permanent transient temporary)]),
     is  => "rw",
     default => "transient",
 );
